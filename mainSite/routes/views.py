@@ -19,3 +19,7 @@ def redirect_to_home():
 @views_bp.route('/billing', methods=['GET'])
 def billing():
     pass
+
+@views_bp.route('/settings', methods=['GET','POST'])
+def user_settings():
+    return render_template('profile.html', current_user=current_user)

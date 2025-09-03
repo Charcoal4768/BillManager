@@ -21,7 +21,7 @@
             <div class="internal">
                 <div class="profile">
                     <a href="{{ url_for('views.home') }}"><img class="logo small" src="{{ url_for('static', filename='default_images/pfp.webp') }}" alt="Logo"></a>
-                    <p>Username</p>
+                    <p>{{current_user.name}}</p>
                 </div>
                 <div class="links">
                     <ul>
@@ -29,7 +29,7 @@
                         {% if current_user.is_authenticated %}
                         <li><a href="{{ url_for('views.billing') }}">Create Bill</a></li>
                         <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-                        <li><a href="{{ url_for('views.billing') }}">Settings</a></li>
+                        <li><a href="{{ url_for('views.settings') }}">Settings</a></li>
                         {% else %}
                         <li><a href="{{ url_for('auth.signup') }}">New Account</a></li>
                         <li><a href="{{ url_for('auth.login') }}">Login</a></li>

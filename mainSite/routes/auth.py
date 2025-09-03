@@ -20,7 +20,7 @@ def login():
             login_user(user)
             flash('Login successful!', 'success')
             return redirect(url_for('views.home'))
-        flash('Login failed. Check your email and password.', 'danger')
+        flash('Wrong phone number or password.', 'danger')
     csrf_token = generate_csrf()
     return render_template('login.html', csrf_token=csrf_token, user=current_user)
 
@@ -50,7 +50,7 @@ def signup():
         address2 = request.form['address-line2']
         #min length check for all fields
         if len(name) < 2 or len(password) < 6 or len(phone) < 9:
-            flash('Please fill out all fields correctly.', 'danger')
+            flash('Please fill out all fields correctly.', 'warning')
             return redirect(url_for('auth.signup'))
         if not password:
             flash('Passwords are mandatory.', 'danger')
@@ -60,10 +60,10 @@ def signup():
             return redirect(url_for('auth.signup'))
         user = User.get_by_phone(phone)
         if user:
-            flash('Phone Number already registered. Please log in.', 'danger')
+            flash('Phone Number already registered. Please log in.', 'warning')
             return redirect(url_for('auth.login'))
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-        new_user = User.create_user(name=name, phone=phone, addr=address+'\n'+address2, gstno=gstno, password=password)
+        new_user = User.create_user(name=name, phone=phone, addr=address+'\n'+address2, gstno=gstno, password=hashed_password)
         login_user(new_user)
         flash(f'Signed up as {name}! You can now add more details.', 'success')
         return redirect(url_for('views.home'))

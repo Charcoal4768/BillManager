@@ -17,13 +17,13 @@ class User(db.Model, UserMixin, TimestampMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    phone = db.Column(db.String(20))
-    password = db.Column(db.String(100))
-    addr = db.Column(db.String(200))
+    email = db.Column(db.String(120), unique=True)
+    phone = db.Column(db.String(20), unique=True, nullable=False)
+    password = db.Column(db.String(1000))
+    addr = db.Column(db.String(500))
     gstno = db.Column(db.String(12), nullable=False)
     # Relationship to stores: a user can have multiple stores
-    stores = db.relationship('Store', backref='owner', lazy=True, cascade="all, delete-orphan")
+    stores = db.relationship('Store', backref='store_owner', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"User('{self.name}', '{self.email}')"
@@ -37,7 +37,7 @@ class User(db.Model, UserMixin, TimestampMixin):
         return Store.query.filter_by(user_id=userid).all()
 
     @classmethod
-    def create_user(cls, name, email, phone=None, addr=None, gstno=None, password="None"):
+    def create_user(cls, name, phone, email=None, addr=None, gstno=None, password="None"):
         """
         Creates a new user instance.
         """
@@ -158,6 +158,10 @@ class Product(db.Model, TimestampMixin):
     batch = db.Column(db.String(12))
     mrp = db.Column(db.Float, nullable=False)
     
+    # New columns for quantity and rate units
+    quantity_unit = db.Column(db.String(20), nullable=False, default='units')
+    rate_unit = db.Column(db.String(20), nullable=False, default='per unit')
+    
     # Foreign key to link a product to a store
     store_id = db.Column(db.Integer, db.ForeignKey('stores.id'), nullable=False)
     __table_args__ = (
@@ -204,7 +208,7 @@ class Product(db.Model, TimestampMixin):
         ).all()
 
     @classmethod
-    def create_product(cls, store_id, name, quantity, gst_percent, mrp, expire=None, batch=None):
+    def create_product(cls, store_id, name, quantity, gst_percent, mrp, quantity_unit='units', rate_unit='per unit', expire=None, batch=None):
         """
         Creates a new product instance and links it to a store.
         """
@@ -214,6 +218,8 @@ class Product(db.Model, TimestampMixin):
             quantity=quantity,
             gst_percent=gst_percent,
             mrp=mrp,
+            quantity_unit=quantity_unit,
+            rate_unit=rate_unit,
             expire=expire,
             batch=batch
         )

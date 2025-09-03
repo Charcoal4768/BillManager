@@ -77,6 +77,7 @@ nav .internal .links {
     display: block;
     margin: auto;
     padding-bottom: var(--standard-padding);
+    padding-top: var(--standard-padding);
     /* border-bottom: 1px solid var(--grey); */
 }
 
