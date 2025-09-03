@@ -1,0 +1,475 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', 'sans-serif', Calibri;
+}
+
+:root {
+    --small-font-size: clamp(0.5rem, 2vw, 0.75rem);
+    --normal-font-size: clamp(0.75rem, 3vw, 1rem);
+    --medium-font-size: clamp(1rem, 4vw, 1.25rem);
+    --large-font-size: clamp(1.25rem, 5vw, 2rem);
+    --standard-container-padding: clamp(0.75rem, 5vw, 2rem);
+    --standard-padding: clamp(0.5rem, 2.5vw, 0.75rem);
+    --thin-container-padding: clamp(0.25rem, 1.5vw, 0.5rem);
+    --grey: #a6a6a6;
+    --light-grey: #d9d9d9;
+    --primary-color: #6200EE;
+    --on-surface: rgba(0, 0, 0, 0.6);
+    --outline-color: #ccc;
+    --bg-color: #fff;
+    --transition-speed: 0.3s;
+}
+
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: var(--standard-padding);
+    background: white;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+}
+
+nav ul li {
+    margin-left: var(--thin-container-padding);
+    margin-right: var(--thin-container-padding);
+}
+
+nav .internal {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+nav .internal a {
+    text-decoration: none;
+    color: black;
+}
+
+nav .internal .profile {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+nav .internal .profile img {
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    margin-right: var(--standard-padding);
+}
+
+nav .internal .links {
+    position: relative;
+    display: block;
+    margin: auto;
+    padding-bottom: var(--standard-padding);
+    /* border-bottom: 1px solid var(--grey); */
+}
+
+nav .internal .links::before {
+    position: absolute;
+    content: '';
+    height: 1px;
+    background-color: var(--grey);
+    width: 120%;
+    left: -10%;
+    bottom: -10%;
+}
+
+.burger {
+    position: absolute;
+    top: 10px;
+    right: 0;
+    visibility: hidden;
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 20px;
+    cursor: pointer;
+    min-width: 30px;
+}
+
+.burger .line {
+    height: 3px;
+    background-color: var(--grey);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+input,
+select {
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+}
+
+.container {
+    text-align: center;
+}
+
+.material-input {
+    position: relative;
+    min-width: clamp(150px, 40vw, 180px); 
+    height: 56px;
+}
+
+.input-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--outline-color);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color var(--transition-speed);
+}
+
+/* The actual, invisible input field */
+.input-container input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0 1rem;
+    font-family: 'Inter', sans-serif;
+    font-size: var(--normal-font-size);
+    background: transparent;
+    color: black;
+    border: none;
+    outline: none;
+    z-index: 10;
+}
+
+/* The label that floats */
+.label {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--on-surface);
+    transition: top var(--transition-speed),
+        transform var(--transition-speed),
+        font-size var(--transition-speed),
+        color var(--transition-speed);
+    pointer-events: none;
+    z-index: 5;
+    white-space: nowrap;
+}
+
+/* The floating label for focused/filled state */
+.material-input:focus-within .label,
+.material-input.filled .label {
+    top: 0;
+    transform: translateY(-50%);
+    font-size: var(--small-font-size);
+    background-color: var(--bg-color);
+    padding: 0 0.25rem;
+    color: var(--primary-color);
+    left: var(--small-font-size);
+}
+
+/* The animated bottom line */
+.styled-input-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: transparent;
+    transition: background-color var(--transition-speed);
+}
+
+/* The focus state styling */
+.material-input:focus-within .input-container {
+    border-color: var(--primary-color);
+    border-width: 2px;
+}
+
+.material-input.short{
+    width: 45%;
+}
+.material-input.long{
+    width: 100%;
+}
+/* Minimalistic hover effect for the input container */
+.material-input:hover .input-container {
+    box-shadow: 0 0 5px var(--light-grey);
+}
+.authLander{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+}
+.authFormContainer{
+    max-width: 1000px;
+    max-height: 1200px;
+    padding: var(--standard-container-padding);
+    display: block;
+    margin: auto;
+}
+.authFormContainer form{
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--thin-container-padding);
+}
+.authFormContainer button {
+    /* Base styles */
+    display: inline-block;
+    width: 100%;
+    padding: var(--standard-padding);
+    margin-top: var(--standard-padding);
+    font-size: var(--normal-font-size);
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 8px;
+    border: 1px solid var(--primary-color);
+    background-color: var(--primary-color);
+    color: var(--bg-color); /* Use a variable for text color */
+    transition: background-color var(--transition-speed), color var(--transition-speed), border-color var(--transition-speed);
+}
+
+/* Hover and Focus States */
+.authFormContainer button:hover,
+.authFormContainer button:focus {
+    background-color: transparent;
+    color: var(--primary-color);
+    outline: none;
+}
+.standardLander{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    z-index: 0;
+}
+.standardFormContainer{
+    position: relative;
+    max-width: 1000px;
+    max-height: 1200px;
+    padding: var(--standard-container-padding);
+    display: block;
+    margin: auto;
+    margin-top: clamp(100px, 15vh, 200px);
+    z-index: 1;
+}
+.back{
+    position: absolute;
+    right: 0;
+    top: 10px;
+    width: 25px;
+    height: 25px;
+    background-image: url(./default_images/back.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.75;
+    z-index: 2;
+    transition: all var(--transition-speed);
+}
+.standardFormContainer form{
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--thin-container-padding);
+}
+.standardFormContainer button {
+    /* Base styles */
+    display: inline-block;
+    width: 100%;
+    padding: var(--standard-padding);
+    margin-top: var(--standard-padding);
+    font-size: var(--normal-font-size);
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 8px;
+    border: 1px solid var(--primary-color);
+    background-color: var(--primary-color);
+    color: var(--bg-color); /* Use a variable for text color */
+    transition: background-color var(--transition-speed), color var(--transition-speed), border-color var(--transition-speed);
+}
+
+/* Hover and Focus States */
+.standardFormContainer button:hover,
+.standardFormContainer button:focus {
+    background-color: transparent;
+    color: var(--primary-color);
+    outline: none;
+}
+
+.flexLayer{
+    display: flex;
+    gap: var(--thin-container-padding);
+}
+
+.pageLander{
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+.storesContainer{
+    display: block;
+    margin: auto;
+}
+.storesContainer .heading h2{
+    position: relative;
+    font-size: var(--large-font-size);
+    text-align: center;
+    font-weight: 400;
+}
+.storesContainer .body{
+    padding: var(--thin-container-padding);
+    padding-top: var(--standard-container-padding);
+}
+.storesGrid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--normal-font-size);
+}
+.storesContainer .store{
+    padding: var(--thin-container-padding);
+    border-radius: 36px;
+    background-color: white;
+    border: 1px solid var(--light-grey);
+    min-height: 150px;
+    min-width: 75px;
+    width: clamp(75px, 25vw, 200px);
+}
+.storesContainer .store .title{
+    padding: var(--thin-container-padding);
+}
+.storesContainer .store .title h3{
+    position: relative;
+    font-weight: 300;
+    font-size: var(--normal-font-size);
+}
+.storesContainer .store .title h3::after{
+    content: '';
+    position: absolute;
+    bottom: calc(var(--small-font-size)*-1);
+    left: 10%;
+    width: 80%;
+    height: 1px;
+    background-color: var(--light-grey);
+}
+.storesContainer .store .body{
+    font-size: var(--normal-font-size);
+    font-weight: 300;
+    padding-top: calc(var(--thin-container-padding)*2);
+}
+.store .addStore{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.store .addStore .add{
+    width: 50%;
+    height: 50%;
+    background-image: url(./default_images/newStore.svg);
+    opacity: 0.25;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    transition: var(--transition-speed);
+}
+.store .addStore .add:hover{
+    transform: scale(1.2);
+}
+.back:hover{
+    transform: scale(1.2);
+}
+@media (max-width: 820px) {
+    nav .internal .links {
+        visibility: hidden;
+        display: none;
+    }
+
+    .burger {
+        visibility: visible;
+        display: flex;
+    }
+
+    nav .internal .profile {
+        flex-grow: 1;
+    }
+}
+@media (max-width: 660px) {
+    /* :root {
+        --small-font-size: 0.6rem;
+        --normal-font-size: 0.8rem;
+        --medium-font-size: 1rem;
+        --large-font-size: 1.25rem;
+        --standard-container-padding: 0.75rem;
+        --standard-padding: 0.5rem;
+        --thin-container-padding: 0.25rem;
+    } */
+
+    .storesGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .storesContainer{
+        width: 80%;
+    }
+    .storesContainer .store{
+        width: 90%;
+        border-radius: 8px;
+    }
+}
+@media (max-width: 450px) {
+    .authLander{
+        visibility: collapse;
+    }
+    .authFormContainer{
+        visibility: visible;
+    }
+    .standardFormContainer{
+        visibility: visible;
+    }
+    .storesContainer .store{
+        width: 95%;
+    }
+    .storesContainer{
+        width: 95%;
+    }
+    .storesGrid{
+        gap: none;
+    }
+    :root {
+        --small-font-size: 0.6rem;
+        /* 9.6px */
+        --normal-font-size: 0.875rem;
+        /* 14px */
+        --medium-font-size: 1rem;
+        /* 16px */
+        --large-font-size: 1.5rem;
+        /* 24px */
+        --standard-container-padding: 1rem;
+        --standard-padding: 0.5rem;
+        --thin-container-padding: 0.25rem;
+    }
+}
+@media (max-width: 300px){
+    .storesGrid{
+        grid-template-columns: 1fr;
+    }
+}

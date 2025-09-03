@@ -1,0 +1,37 @@
+DATABASE:
+
+    USERS:
+        ID: int
+        NAME: str (non unique)
+        EMAIL: str (unique)
+        PHONE: str 
+        ADDR: str
+        GST NO.: str
+    PRODUCTS:
+        ID: int
+        STORE_ID: int
+        NAME: str
+        Quantitiy: int
+        GST_PERCENT: int (optional)
+        Expire: DATETIME
+        BATCH_NO: str
+        MRP: float
+    STORE: (connected to products and to USERS)
+        ID: int
+        NAME: str (non unique)
+        EMAIL: str (unique)
+        PHONE: str 
+        ADDR: str
+        GST NO.: str
+
+FUNCTIONALITY:
+
+Signup/Login Pages, mobile-first, simple, friendly 
+material-ish design
+UI should be modern but also printer-friendly, not too much shading
+
+Let a user create one or more stores
+
+Make an editable bill at the store's adress with the selected products (+/-/delete button next to each product).
+If a product in the bill has its Quantitiy reduced to 0, remove that product
+Have an add more products button at the end where you can search products by name

@@ -1,0 +1,35 @@
+{% extends 'index.html' %}
+{% block meta %}
+{% endblock %}
+{% block crit_scripts %}
+{% endblock %}
+{% block content %}
+<div class="authLander">
+    <div class="authFormContainer" style="min-width: 200px;">
+        <h2>LogIn</h2>
+        <form method="post">
+        <input type="hidden" value="{{csrf_token}}" name="csrf_token">
+        <p>Phone</p>
+        <div class="flexLayer">
+            <div class="material-input long">
+                <div class="input-container">
+                    <input type="text" autocomplete="phone" name="phone" required>
+                </div>
+                <div class="label">Phone Number</div>
+            </div>
+        </div>
+        <p>Your Password</p>
+        <div class="material-input long">
+            <div class="input-container">
+                <input type="password" autocomplete="current-password" name="password" required>
+            </div>
+            <div class="label">Password</div>
+        </div>
+        <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{url_for('static', filename='scripts/input_script.js')}}" defer></script>
+{% endblock %}
