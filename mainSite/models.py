@@ -8,6 +8,14 @@ from .extensions import db
 class TimestampMixin(object):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    def to_dict_timestamps(self):
+        """Returns a dictionary of timestamp attributes."""
+        data = {}
+        if self.created_at:
+            data['created_at'] = self.created_at.isoformat()
+        if self.updated_at:
+            data['updated_at'] = self.updated_at.isoformat()
+        return data
 
 class User(db.Model, UserMixin, TimestampMixin):
     """
@@ -18,23 +26,41 @@ class User(db.Model, UserMixin, TimestampMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True)
-    phone = db.Column(db.String(20), unique=True, nullable=False)
+    tel_code = db.Column(db.String(15), default='+91')
+    phone = db.Column(db.String(10), unique=True, nullable=False)
     password = db.Column(db.String(1000))
     addr = db.Column(db.String(500))
-    gstno = db.Column(db.String(12), nullable=False)
+    gstno = db.Column(db.String(15), nullable=False)
+    pfp_url = db.Column(db.String(2000))
     # Relationship to stores: a user can have multiple stores
     stores = db.relationship('Store', backref='store_owner', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"User('{self.name}', '{self.email}')"
+    
+    def to_dict(self):
+        """
+        Converts the User object to a dictionary, suitable for JSON serialization.
+        Note: The password is not included for security reasons.
+        """
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+            'phone': self.phone,
+            'addr': self.addr,
+            'gstno': self.gstno,
+            'pfp_url': self.pfp_url,
+            **self.to_dict_timestamps()
+        }
 
-    @classmethod
-    def get_all_stores(cls, userid):
-        """
-        Retrieves all stores associated with a given user ID.
-        This is useful for a user dashboard showing all their stores.
-        """
-        return Store.query.filter_by(user_id=userid).all()
+    # @classmethod
+    # def get_all_stores(cls, userid):
+    #     """
+    #     Retrieves all stores associated with a given user ID.
+    #     This is useful for a user dashboard showing all their stores.
+    #     """
+    #     return Store.query.filter_by(user_id=userid).all()
 
     @classmethod
     def create_user(cls, name, phone, email=None, addr=None, gstno=None, password="None"):
@@ -86,8 +112,9 @@ class Store(db.Model, TimestampMixin):
     __tablename__ = 'stores'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    phone = db.Column(db.String(20))
+    email = db.Column(db.String(120), unique=True)
+    tel_code = db.Column(db.String(15), default='+91')
+    phone = db.Column(db.String(10), nullable=False)
     addr = db.Column(db.String(200))
     gst_no = db.Column(db.String(50))
     owner = db.Column(db.String(150), nullable=False)
@@ -101,6 +128,25 @@ class Store(db.Model, TimestampMixin):
 
     def __repr__(self):
         return f"Store('{self.name}')"
+    
+    def to_dict(self):
+        """
+        Converts the Store object to a dictionary.
+        """
+        total_products = db.session.query(func.count(Product.id)).filter(Product.store_id == self.id).scalar()
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+            'tel_code': self.tel_code,
+            'phone': self.phone,
+            'addr': self.addr,
+            'gst_no': self.gst_no,
+            'owner': self.owner,
+            'user_id': self.user_id,
+            'total_products': total_products,
+            **self.to_dict_timestamps()
+        }
 
     @classmethod
     def get_total_products(cls):
@@ -111,11 +157,11 @@ class Store(db.Model, TimestampMixin):
         return db.session.query(db.func.count(Product.id)).scalar()
 
     @classmethod
-    def create_store(cls, user_id, name, email, phone=None, addr=None, gst_no=None):
+    def create_store(cls, user_id, name, email, phone=None, addr=None, gst_no=None, owner=None, tel_code='+91'):
         """
         Creates a new store and links it to a user.
         """
-        new_store = cls(user_id=user_id, name=name, email=email, phone=phone, addr=addr, gst_no=gst_no)
+        new_store = cls(user_id=user_id, name=name, email=email, phone=phone, addr=addr, gst_no=gst_no, owner=owner, tel_code=tel_code)
         db.session.add(new_store)
         db.session.commit()
         return new_store
@@ -153,14 +199,14 @@ class Product(db.Model, TimestampMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     quantity = db.Column(db.Integer, nullable=False, default=0)
+    default_pack_size = db.Column(db.Integer, nullable=True)
     gst_percent = db.Column(db.Integer, nullable=False)
     expire = db.Column(db.DateTime)
     batch = db.Column(db.String(12))
     mrp = db.Column(db.Float, nullable=False)
     
-    # New columns for quantity and rate units
+    # New columns for unit
     quantity_unit = db.Column(db.String(20), nullable=False, default='units')
-    rate_unit = db.Column(db.String(20), nullable=False, default='per unit')
     
     # Foreign key to link a product to a store
     store_id = db.Column(db.Integer, db.ForeignKey('stores.id'), nullable=False)
@@ -170,6 +216,27 @@ class Product(db.Model, TimestampMixin):
     def __repr__(self):
         return f"Product('{self.name}', MRP: {self.mrp}')"
     
+    def to_dict(self):
+        """
+        Converts the Product object to a dictionary.
+        Handles datetime objects by converting them to ISO format.
+        """
+        data = {
+            'id': self.id,
+            'name': self.name,
+            'quantity': self.quantity,
+            'default_pack_size': self.default_pack_size,
+            'gst_percent': self.gst_percent,
+            'batch': self.batch,
+            'mrp': self.mrp,
+            'quantity_unit': self.quantity_unit,
+            'store_id': self.store_id,
+            **self.to_dict_timestamps()
+        }
+        if self.expire:
+            data['expire'] = self.expire.isoformat()
+        return data
+
     @classmethod
     def search_products(cls, store_id, query):
         """
@@ -279,6 +346,25 @@ class Bill(db.Model, TimestampMixin):
 
     def __repr__(self):
         return f"Bill(ID: {self.id}, Store: {self.store_name}, Date: {self.billing_date.strftime('%Y-%m-%d')})"
+    
+    def to_dict(self):
+        """
+        Converts the Bill object to a dictionary.
+        Handles datetime objects by converting them to ISO format.
+        """
+        return {
+            'id': self.id,
+            'customer_name': self.customer_name,
+            'doctor_name': self.doctor_name,
+            'billing_date': self.billing_date.isoformat(),
+            'store_name': self.store_name,
+            'owner_name': self.owner_name,
+            'store_gst_no': self.store_gst_no,
+            'store_addr': self.store_addr,
+            'store_phone': self.store_phone,
+            'store_id': self.store_id,
+            **self.to_dict_timestamps()
+        }
 
 class BillItem(db.Model):
     """
@@ -302,3 +388,17 @@ class BillItem(db.Model):
 
     def __repr__(self):
         return f"BillItem(Product ID: {self.product_id}, Quantity: {self.quantity})"
+    
+    def to_dict(self):
+        """
+        Converts the BillItem object to a dictionary.
+        """
+        return {
+            'id': self.id,
+            'quantity': self.quantity,
+            'discount_percent': self.discount_percent,
+            'gst_percent': self.gst_percent,
+            'total_price': self.total_price,
+            'bill_id': self.bill_id,
+            'product_id': self.product_id
+        }

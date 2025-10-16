@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     closeButton = window.document.querySelector(".back");
     mainPage = window.document.querySelector(".pageLander");
     storeForm = window.document.querySelector(".standardLander");
+    storeForm.style.display = "none";
 
     addButton.addEventListener("click", ()=>{
         storeForm.style.display = "flex";

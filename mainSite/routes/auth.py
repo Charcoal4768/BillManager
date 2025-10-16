@@ -17,7 +17,7 @@ def login():
         user = User.get_by_phone(phone)
         # Check fields first
         if user and check_password_hash(user.password, password):
-            login_user(user)
+            login_user(user, remember=True)
             flash('Login successful!', 'success')
             return redirect(url_for('views.home'))
         flash('Wrong phone number or password.', 'danger')
@@ -46,6 +46,7 @@ def signup():
         password = request.form['password']
         password2 = request.form['password2']
         phone = request.form['phone']
+        tel_code = request.form['country-code']
         address = request.form['address-line1']
         address2 = request.form['address-line2']
         #min length check for all fields
@@ -63,9 +64,9 @@ def signup():
             flash('Phone Number already registered. Please log in.', 'warning')
             return redirect(url_for('auth.login'))
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-        new_user = User.create_user(name=name, phone=phone, addr=address+'\n'+address2, gstno=gstno, password=hashed_password)
-        login_user(new_user)
-        flash(f'Signed up as {name}! You can now add more details.', 'success')
+        new_user = User.create_user(name=name, phone=phone, tel_code=tel_code, addr=address+'\n'+address2, gstno=gstno, password=hashed_password)
+        login_user(new_user, remember=True)
+        flash(f'Signed up as {name}!.', 'success')
         return redirect(url_for('views.home'))
     csrf_token = generate_csrf()
     return render_template('signup.html', csrf_token=csrf_token, user=current_user)

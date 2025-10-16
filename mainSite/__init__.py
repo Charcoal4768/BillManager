@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 from flask_login import LoginManager
 from flask_socketio import join_room, leave_room, send, emit
 from dotenv import load_dotenv
-from .utils import slugify
+from .utils import slugify, split
 from .extensions import db, login_manager, migrate, csrf, socket
 from .models import User
 from .routes.api import api_bp
@@ -21,8 +21,9 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['SESSION_COOKIE_DOMAIN'] = None
 app.jinja_env.filters['slugify'] = slugify
+app.jinja_env.filters['split'] = split
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+# app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(api_bp)

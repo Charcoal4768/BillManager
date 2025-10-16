@@ -11,7 +11,21 @@
         <input type="hidden" value="{{csrf_token}}" name="csrf_token">
         <p>Phone</p>
         <div class="flexLayer">
-            <div class="material-input long">
+            <div class="material-input short">
+                <div class="input-container">
+                    <select name="country-code" id="country-code" autocomplete="tel-country-code">
+                        <option value="" disabled selected></option>
+                        <option value="+1">United States +1</option>
+                        <option value="+91">India +91</option>
+                    </select>
+                    <!-- Custom SVG for the dropdown caret -->
+                    <svg class="select-caret" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7 10L12 15L17 10" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="label">Country Code</div>
+            </div>
+            <div class="material-input short">
                 <div class="input-container">
                     <input type="text" autocomplete="phone" name="phone" required>
                 </div>
@@ -31,5 +45,4 @@
 </div>
 {% endblock %}
 {% block scripts %}
-<script src="{{url_for('static', filename='scripts/input_script.js')}}" defer></script>
 {% endblock %}

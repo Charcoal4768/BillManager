@@ -1,6 +1,7 @@
 from flask import Flask, Blueprint, jsonify, request, render_template, redirect, url_for
-from flask_login import current_user
+from flask_login import current_user, login_required
 from mainSite import socket
+from mainSite.models import Store, Product
 
 views_bp = Blueprint('views', __name__)
 
@@ -23,3 +24,9 @@ def billing():
 @views_bp.route('/settings', methods=['GET','POST'])
 def user_settings():
     return render_template('profile.html', current_user=current_user)
+
+@login_required
+@views_bp.route('/stores/<int:store_id>', methods=['GET','POST'])
+def view_stores(store_id):
+    store = Store.query.filter_by(id = store_id, user_id = current_user.id).first_or_404().to_dict()
+    return render_template('stores.html', store=store)

@@ -1,0 +1,158 @@
+{% extends 'index.html' %}
+{% block meta %}
+{% endblock %}
+{% block crit_scripts %}
+{% endblock %}
+{% block content %}
+
+<div id="storePanel">
+    {% if store %}
+    {% autoescape false %}
+    <div class="heading">
+        <div class="flexLayer">
+            <h1>
+                Manage Store
+            </h1>
+            <div class="flexLayerNowrap centerInside">
+            <button class="test">Edit</button>
+            <button class="test">Delete</button>
+            </div>
+        </div>
+    </div>
+    <div class="storeBody">
+        <div class="header">
+            <h4><strong>Total Products:</strong> {{store.total_products}}</h4>
+            <div class="flexLayer">
+                <p><strong>Name:</strong> {{store.name if store.name else "No Name"}}</p>
+                <p><strong>Owner:</strong> {{store.owner if store.owner else "No Owner"}}</p>
+            </div>
+            <div class="flexLayer">
+                <p><strong>Address:</strong> {{store.addr | replace('\n','<br>')}}</p>
+                <p><strong>Email:</strong> {{store.email if store.email else "No Email"}}</p>
+            </div>
+            <div class="flexLayer">
+                <p><strong>Phone:</strong> {{store.phone}}</p>
+                <p><strong>GSTIN:</strong> {{store.gst_no}}</p>
+            </div>
+        </div>
+    </div>
+    {% endautoescape %}
+    {% else %}
+    <div class="heading">
+        <h2>Store Dosent Exist or You dont have access.</h2>
+    </div>
+    {% endif %}
+</div>
+{% if store %}
+<div id="productContainer">
+    <div class="heading">
+            <h2>Products
+            <button id="add-product" class="test">Add</button>
+            </h2>
+    </div>
+    <div id="productList">
+        <table id="products-table">
+            <tr>
+                <th>Name</th>
+                <th>MBP</th>
+                <th>GST</th>
+                <th>Discount</th>
+                <th>Amount</th>
+                <th>Expiry</th>
+                <th>Batch Code</th>
+            </tr>
+            <tr onclick="openProductDetails(this.id);">
+                <!--- Testing with some sample data first -->
+                <td class="hidden">1</td>
+                <td>Sample Product</td>
+                <td>100.00</td>
+                <td>18%</td>
+                <td>10%</td>
+                <td>108.00</td>
+                <td>2024-12-31</td>
+                <td>ABC123</td>
+            </tr>
+        </table>
+        <div id="loading" style="text-align: center; display: none; padding: 20px;">
+            <p>Loading more products...</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="standardLander">
+    <div class="standardFormContainer">
+        <div class="back"></div>
+        <h2>Your Store</h2>
+        <form>
+            <p>Store Name</p>
+            <div class="flexLayer">
+                <div class="material-input">
+                    <div class="input-container">
+                        <input type="text" autocomplete="store-name" name="store-name" required id="name-store" value="{{ store.name if store.name else None }}">
+                    </div>
+                    <div class="label">Store Name</div>
+                </div>
+                <div class="material-input">
+                    <div class="input-container">
+                        <input type="text" autocomplete="gst" name="gstno" required id="gst-store" value="{{ store.gst_no if store.gst_no else None }}">
+                    </div>
+                    <div class="label">GST No.</div>
+                </div>
+            </div>
+            <p>Address</p>
+            <div class="material-input">
+                <div class="input-container">
+                    <input type="text" autocomplete="address-line1" name="address-line1" required
+                        id="address-line1-store" value="{{ (store.addr | split('\n') | first) if store.addr else None }}">
+                </div>
+                <div class="label">Street Address</div>
+            </div>
+            <div class="material-input">
+                <div class="input-container">
+                    <input type="text" autocomplete="address-line2" name="address-line2" id="address-line2-store" value="{{ store.addr.split('\n')[1] if store.addr and store.addr.split('\n')|length > 1 else '' }}">
+                </div>
+                <div class="label">Address Line 2</div>
+            </div>
+            <p>Phone</p>
+            <div class="flexLayer">
+                <div class="material-input">
+                    <div class="input-container">
+                        <select name="country-code" id="country-code" autocomplete="tel-country-code" required>
+                            <option value="{{ store.tel_code if store.tel_code else '' }}" disabled selected>{{ store.tel_code if store.tel_code else 'Select Country Code' }}</option>
+                        </select>
+                        <!-- Custom SVG for the dropdown caret -->
+                        <svg class="select-caret" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 10L12 15L17 10" stroke="black" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="label">Country Code</div>
+                </div>
+                <div class="material-input">
+                    <div class="input-container">
+                        <input type="text" autocomplete="phone" name="phone" id="phone-store" required value="{{ store.phone if store.phone else None }}">
+                    </div>
+                    <div class="label">Phone Number</div>
+                </div>
+            </div>
+            <p>Contact</p>
+            <div class="material-input">
+                <div class="input-container">
+                    <input type="email" autocomplete="phone" name="email" id="email-store">
+                </div>
+                <div class="label">Email</div>
+            </div>
+            <p>Owner's Name</p>
+            <div class="material-input">
+                <div class="input-container">
+                    <input type="text" autocomplete="name" name="name" required id="owner-store" value="{{ store.owner if store.owner else None }}">
+                </div>
+                <div class="label">Name</div>
+            </div>
+            <button id="new-store">Edit Store</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{% endblock %}

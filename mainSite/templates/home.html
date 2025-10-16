@@ -13,32 +13,27 @@
         <div class="body">
             <div class="storesGrid">
                 <div class="store">
-                    <div class="title">
-                        <h3>Sample Heading</h3>
-                    </div>
-                    <div class="body">
-                        Total Products: 999
-                    </div>
-                </div>
-                <div class="store">
-                    <div class="title">
-                        <h3>Sample Heading</h3>
-                    </div>
-                    <div class="body">
-                        Total Products: 999
-                    </div>
-                </div>
-                <div class="store">
                     <div class="addStore">
                         <div class="add"></div>
                     </div>
                 </div>
             </div>
+            <div id="loading" style="text-align: center; display: none; padding: 20px;">
+                <p>Loading more stores...</p>
+            </div>
         </div>
     </div>
     {% else %}
-    <h3>Please Create An account First.</h3>
-    <p><a href="{{url_for('auth.signup')}}">New Account</a></p>
+    <div class="Intro">
+    <div class="flexLayer column">
+        <h1>Welcome to Bill Manager!</h1>
+        <p class="introText">Manage your store's inventory and billing with ease. Sign up or log in to get started!</p>
+        <div class="flexLayer">
+            <a href="{{ url_for('auth.login') }}" class="roundedButton">Login</a>
+            <a href="{{ url_for('auth.signup') }}" class="roundedButton button-secondary">Sign Up</a>
+        </div>
+    </div>
+    </div>
     {% endif %}
 </div>
 <div class="standardLander">
@@ -64,22 +59,47 @@
             <p>Address</p>
             <div class="material-input long">
                 <div class="input-container">
-                    <input type="text" autocomplete="address-line1" name="address-line1" required id="address-line1-store">
+                    <input type="text" autocomplete="address-line1" name="address-line1" required
+                        id="address-line1-store">
                 </div>
                 <div class="label">Street Address</div>
             </div>
             <div class="material-input long">
                 <div class="input-container">
-                    <input type="text" autocomplete="address-line2" name="address-line2" required id="address-line2-store">
+                    <input type="text" autocomplete="address-line2" name="address-line2" id="address-line2-store">
                 </div>
                 <div class="label">Address Line 2</div>
             </div>
             <p>Phone</p>
+            <div class="flexLayer">
+                <div class="material-input short">
+                    <div class="input-container">
+                        <select name="country-code" id="tel-code" autocomplete="tel-country-code" required>
+                            <option value="" disabled selected></option>
+                            <option value="+1">United States +1</option>
+                            <option value="+91">India +91</option>
+                        </select>
+                        <!-- Custom SVG for the dropdown caret -->
+                        <svg class="select-caret" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 10L12 15L17 10" stroke="black" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="label">Country Code</div>
+                </div>
+                <div class="material-input short">
+                    <div class="input-container">
+                        <input type="text" autocomplete="phone" name="phone" id="phone-store" required>
+                    </div>
+                    <div class="label">Phone Number</div>
+                </div>
+            </div>
+            <p>Contact</p>
             <div class="material-input long">
                 <div class="input-container">
-                    <input type="text" autocomplete="phone" name="phone" required id="phone-store">
+                    <input type="email" autocomplete="phone" name="email" id="email-store">
                 </div>
-                <div class="label">Phone Number</div>
+                <div class="label">Email</div>
             </div>
             <p>Owner's Name</p>
             <div class="material-input long">
@@ -94,6 +114,9 @@
 </div>
 {% endblock %}
 {% block scripts %}
+{% if current_user.is_authenticated %}
 <script src="{{url_for('static', filename='scripts/home.js')}}" defer></script>
-<script src="{{url_for('static', filename='scripts/input_script.js')}}" defer></script>
+<script src="{{url_for('static', filename='scripts/stores.js')}}" defer></script>
+<script src="{{ url_for('static', filename='scripts/load_stores.js') }}" defer></script>
+{% endif %}
 {% endblock %}

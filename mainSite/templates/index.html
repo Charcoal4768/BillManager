@@ -29,7 +29,7 @@
                         {% if current_user.is_authenticated %}
                         <li><a href="{{ url_for('views.billing') }}">Create Bill</a></li>
                         <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-                        <li><a href="{{ url_for('views.settings') }}">Settings</a></li>
+                        <li><a href="{{ url_for('views.user_settings') }}">Settings</a></li>
                         {% else %}
                         <li><a href="{{ url_for('auth.signup') }}">New Account</a></li>
                         <li><a href="{{ url_for('auth.login') }}">Login</a></li>
@@ -43,6 +43,20 @@
                 </div>
             </div>
         </nav>
+        <div class="flashContainer">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            <div class="messageList" id="flashed-message-list">
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="messageContainer {{category}}">
+                        <li>{{message}}</li>
+                        <span class="close-btn" onclick="this.parentElement.remove()">&times;</span>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% endwith %}
+        </div>
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
@@ -51,7 +65,9 @@
         {% endblock %}
 
         
-        <!-- <script src="mainSite\static\scripts\mainScript.js" async defer></script> -->
+        <script src="/static/scripts/mainScript.js" defer></script>
+        <script src="{{url_for('static', filename='scripts/input_script.js')}}" defer></script>
+        <script src="{{ url_for('static', filename='scripts/country_codes.js') }}" defer></script>
         {% block scripts %}
         {% endblock %}
     </body>
